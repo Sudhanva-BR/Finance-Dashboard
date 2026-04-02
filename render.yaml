@@ -3,6 +3,7 @@ services:
   - type: web
     name: finance-dashboard-api
     runtime: python
+    rootDir: backend
     buildCommand: "./build.sh"
     startCommand: "gunicorn core.wsgi:application"
     envVars:
@@ -20,19 +21,15 @@ services:
         value: 3.12.9
 
   # Frontend Static Site
-  - type: static
+  - type: web
     name: finance-dashboard-ui
-    runtime: node
+    runtime: static
+    rootDir: frontend
     buildCommand: "npm run build"
     publishPath: "dist"
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: finance-dashboard-api
-          property: host
-        # Prepend https:// to the host provided by Render
-        importValue: "https://finance-dashboard-api.onrender.com"
+        value: "https://finance-dashboard-api.onrender.com"
 
 databases:
   - name: finance-db
