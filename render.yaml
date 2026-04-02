@@ -1,5 +1,4 @@
 services:
-  # Backend Web Service
   - type: web
     name: finance-dashboard-api
     runtime: python
@@ -11,26 +10,25 @@ services:
         fromDatabase:
           name: finance-db
           property: connectionString
-      - key: SECRET_KEY
-        generateValue: true
       - key: DEBUG
         value: "False"
       - key: ALLOWED_HOSTS
-        value: "*" # Change this to your domain later
+        value: "*"
       - key: PYTHON_VERSION
-        value: 3.12.9
+        value: "3.12.9"
+      - key: SECRET_KEY
+        generateValue: true
 
-  # Frontend Static Site
   - type: web
     name: finance-dashboard-ui
     runtime: static
     rootDir: frontend
     buildCommand: "npm run build"
-    publishPath: "dist"
+    staticPublishPath: "dist"
     envVars:
       - key: VITE_API_URL
         value: "https://finance-dashboard-api.onrender.com"
 
 databases:
   - name: finance-db
-    plan: free # Use "starter" for production persistence or "free" for testing
+    plan: free
