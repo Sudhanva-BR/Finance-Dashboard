@@ -28,7 +28,7 @@ services:
     staticPublishPath: "frontend/dist"
     envVars:
       - key: VITE_API_URL
-        value: "https://finance-dashboard-api.onrender.com/api/"
+        value: "https://finance-dashboard-api.onrender.com"
     routes:
       - type: rewrite
         source: "/*"
