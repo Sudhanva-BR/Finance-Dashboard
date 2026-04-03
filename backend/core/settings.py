@@ -9,7 +9,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com').split(',')
+# Protocol-stripping for ALLOWED_HOSTS to prevent setup errors
+raw_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com').split(',')
+ALLOWED_HOSTS = [host.replace('https://', '').replace('http://', '').strip('/') for host in raw_hosts]
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,10 +29,11 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -84,6 +88,10 @@ CORS_ALLOWED_ORIGINS = [
 env_cors = os.environ.get('CORS_ALLOWED_ORIGINS')
 if env_cors:
     CORS_ALLOWED_ORIGINS.extend(env_cors.split(','))
+
+# Critical for login/registration when DEBUG=False
+CSRF_TRUSTED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS if origin.startswith('http')]
+
 
 
 STATIC_URL = '/static/'
