@@ -78,6 +78,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://localhost:5173',
+    'https://finance-dashboard-eight-inky.vercel.app',
 ]
 
 env_cors = os.environ.get('CORS_ALLOWED_ORIGINS')
