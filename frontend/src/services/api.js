@@ -11,7 +11,7 @@ const api = axios.create({
 // Auth
 export const register = (data) => api.post('auth/register/', data)
 export const login    = (data) => api.post('auth/login/', data)
-export const getMe    = ()     => api.get('auth/profile/')
+export const getMe    = ()     => api.get('auth/me/')
 
 // Dashboard
 export const getDashboard = () => api.get('dashboard/')
