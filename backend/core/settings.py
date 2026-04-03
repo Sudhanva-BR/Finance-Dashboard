@@ -9,9 +9,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Protocol-stripping for ALLOWED_HOSTS to prevent setup errors
+# Super-robust host stripping to prevent any formatting errors
 raw_hosts = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1,.onrender.com').split(',')
-ALLOWED_HOSTS = [host.replace('https://', '').replace('http://', '').strip('/') for host in raw_hosts]
+ALLOWED_HOSTS = [h.replace('https://', '').replace('http://', '').strip(' /') for h in raw_hosts]
+
+# Trust Render's proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
 
 
 INSTALLED_APPS = [
