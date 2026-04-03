@@ -87,7 +87,14 @@ CORS_ALLOWED_ORIGINS = [
 
 env_cors = os.environ.get('CORS_ALLOWED_ORIGINS')
 if env_cors:
-    CORS_ALLOWED_ORIGINS.extend(env_cors.split(','))
+    for origin in env_cors.split(','):
+        origin = origin.strip()
+        if origin:
+            # Ensure origin has a scheme (http or https)
+            if not origin.startswith('http'):
+                origin = f'https://{origin}'
+            if origin not in CORS_ALLOWED_ORIGINS:
+                CORS_ALLOWED_ORIGINS.append(origin)
 
 # Critical for login/registration when DEBUG=False
 CSRF_TRUSTED_ORIGINS = [origin for origin in CORS_ALLOWED_ORIGINS if origin.startswith('http')]
