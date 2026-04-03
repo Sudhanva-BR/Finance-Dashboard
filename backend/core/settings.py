@@ -1,23 +1,13 @@
 import os
 from pathlib import Path
 from datetime import timedelta
-import dj_database_url
-import environ
-
-env = environ.Env(
-    DEBUG=(bool, False),
-    SECRET_KEY=(str, 'django-insecure-change-this-in-production'),
-)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Read .env file if it exists
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+SECRET_KEY = 'django-insecure-local-development-key-that-is-long-enough-for-jwt'
+DEBUG = True
 
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = env('DEBUG')
-
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
+ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,13 +21,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'records',
-    'whitenoise.runserver_nostatic',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,10 +51,10 @@ TEMPLATES = [{
 WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
-        conn_max_age=600,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
+    }
 }
 
 AUTH_USER_MODEL = 'users.User'
@@ -85,9 +73,7 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
-CORS_ALLOW_ALL_ORIGINS = True  # In production, you might want to restrict this
+CORS_ALLOW_ALL_ORIGINS = True
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
